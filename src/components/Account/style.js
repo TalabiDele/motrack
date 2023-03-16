@@ -20,6 +20,7 @@ export const Container = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 2rem 0rem;
+    position: relative;
 
     h1 {
       font-size: 32px;

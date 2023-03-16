@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
-import { NEXT_PUBLIC_URL, API_URL } from "../config/index";
-// import { parseCookies } from "@/helpers/index";
-// import { useRouter } from "next/router";
+import { API_URL } from "../config/index";
+import jwt from "jwt-decode";
+import Cookies from "universal-cookie";
 
 const AuthContext = createContext();
 
@@ -9,24 +9,54 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
+  const [center, setCenter] = useState(null);
+  const [lati, setLati] = useState();
+  const [long, setLong] = useState();
+  const [token, setToken] = useState();
 
-  // const router = useRouter();
+  const cookies = new Cookies();
 
   useEffect(() => {
     checkUserLoggedIn();
-    // router.prefetch("/feeds");
+
+    navigator.geolocation.watchPosition(function (position) {
+      setCenter({
+        lat: parseFloat(position.coords.latitude),
+        lng: parseFloat(position.coords.longitude),
+      });
+
+      setLati(parseFloat(position.coords.latitude));
+      setLong(parseFloat(position.coords.longitude));
+    });
+
+    console.log(user);
+
+    console.log(lati, long);
+    // if (user) {
+
+    // }
   }, []);
 
+  // Send Location
+
   // Register
-  const register = async (user) => {
-    // setIsLoading(true);
-    const res = await fetch(`${NEXT_PUBLIC_URL}/api/register`, {
+  const register = async ({ number, password, email, username }) => {
+    const res = await fetch(`${API_URL}/auth/local/register?populate=deep`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(user),
+      body: JSON.stringify({
+        username,
+        number,
+        password,
+        email,
+      }),
     });
+
+    const data = await res.json();
+
+    console.log(data);
 
     if (!res.ok) {
       //   setEmailError(res);
@@ -37,20 +67,26 @@ export const AuthProvider = ({ children }) => {
       //   }, 5000);
     }
 
-    const data = await res.json();
-
     // setUserData(data);
 
     if (res.ok) {
       setUser(data.user);
       // router.push("/find");
+
+      const decoded = jwt(data.jwt);
+
+      cookies.set("tracker_authorization", data.jwt, {
+        expires: new Date(decoded.exp * 1000),
+      });
+
+      // checkUserLoggedIn();
     } else {
       console.log("not working");
     }
   };
 
   const forgotPassword = async ({ email }) => {
-    const res = await fetch(`${NEXT_PUBLIC_URL}/api/forgot-password`, {
+    const res = await fetch(`${API_URL}/api/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +112,7 @@ export const AuthProvider = ({ children }) => {
 
   // Login
   const login = async ({ email: identifier, password }) => {
-    const res = await fetch(`${NEXT_PUBLIC_URL}/api/login`, {
+    const res = await fetch(`${API_URL}/auth/local?populate=deep`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -89,13 +125,20 @@ export const AuthProvider = ({ children }) => {
 
     const data = await res.json();
 
-    // console.log(data);
-    // setUserData(data);
+    console.log(data);
 
     if (res.ok) {
-      setUser(data.user.user);
+      setUser(data.user);
       // setUserData(data);
       // router.push("/find");
+
+      const decoded = jwt(data.jwt);
+
+      cookies.set("tracker_authorization", data.jwt, {
+        expires: new Date(decoded.exp * 1000),
+      });
+
+      // checkUserLoggedIn();
     } else {
       setErrorMessage(data.message);
       setError(true);
@@ -104,26 +147,35 @@ export const AuthProvider = ({ children }) => {
 
   // Logout
   const logout = async () => {
-    const res = await fetch(`${NEXT_PUBLIC_URL}/api/logout`, {
-      method: "POST",
+    cookies.remove("tracker_authorization", "", {
+      expires: new Date(0),
     });
-
-    if (res.ok) {
-      setUser(null);
-      // router.push("/login");
-    }
+    setUser(null);
   };
 
   // Check user logged in
   const checkUserLoggedIn = async () => {
-    const res = await fetch(`${NEXT_PUBLIC_URL}/api/user`);
+    const res = await fetch(`${API_URL}/users/me?populate=*`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cookies.get("tracker_authorization")}`,
+      },
+    });
+
+    setToken(cookies.get("tracker_authorization"));
+
     const data = await res.json();
 
+    setUser(data);
+
     if (res.ok) {
-      setUser(data.user);
+      setUser(data);
     } else {
       setUser(null);
     }
+
+    console.log(user);
   };
 
   return (
@@ -134,6 +186,10 @@ export const AuthProvider = ({ children }) => {
         logout,
         checkUserLoggedIn,
         register,
+        center,
+        lati,
+        long,
+        token,
       }}
     >
       {children}

@@ -8,10 +8,12 @@ const Signin = () => {
 
   const { login, user } = useContext(AuthContext);
 
+  console.log(user);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // login({ email, password });
+    login({ email, password });
   };
 
   return (

@@ -53,7 +53,7 @@ const Signup = () => {
     }
 
     // setSlug(username);
-    register({ username, email, password, identifier });
+    register({ username, email, password, number });
   };
 
   return (

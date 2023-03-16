@@ -8,6 +8,7 @@ import {
   Marker,
   useJsApiLoader,
   LoadScript,
+  MarkerF,
 } from "@react-google-maps/api";
 import Geocode from "react-geocode";
 import { useGeolocated } from "react-geolocated";
@@ -17,34 +18,19 @@ import AuthContext from "../context/AuthContext";
 const MapComponent = () => {
   const [address, setAddress] = useState("");
   const [location, setLocation] = useState({ lat: null, lng: null });
-  const [lati, setLati] = useState(null);
-  const [long, setLong] = useState(null);
   const [error, setError] = useState(null);
   const [position, setPosition] = useState([]);
   const [map, setMap] = useState(null);
 
-  const { user } = useContext(AuthContext);
+  const { user, lati, long, center } = useContext(AuthContext);
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setLati(position.coords.latitude);
-      setLong(position.coords.longitude);
-    });
+  console.log(user.id);
 
-    setPosition([lati, long]);
-    if (lati && long) {
-      // handleAddress();
-    }
-  }, [lati, long, position]);
+  useEffect(() => {}, []);
 
   const containerStyle = {
     width: "100%",
     height: "100vh",
-  };
-
-  const center = {
-    lat: parseFloat(lati),
-    lng: parseFloat(long),
   };
 
   const { isLoaded } = useJsApiLoader({
@@ -62,16 +48,6 @@ const MapComponent = () => {
     setMap(null);
   }, []);
 
-  const handleAddress = async () => {
-    let response = await fetch(
-      `https://geocode.xyz/${lati},${long}?geoit=json&auth=154169832664351130039x99496`
-    );
-    let data = await response.json();
-    console.log(data);
-    console.log(data.staddress);
-    setAddress(data.staddress);
-  };
-
   return (
     <Container>
       <div className="">
@@ -79,12 +55,18 @@ const MapComponent = () => {
           <GoogleMap
             mapContainerStyle={containerStyle}
             center={center}
-            zoom={7}
+            zoom={12}
             onLoad={onLoad}
             onUnmount={onUnmount}
+            options={{
+              fullscreenControl: false,
+              zoomControl: false,
+              scaleControl: true,
+              mapTypeControl: false,
+              streetViewControl: false,
+            }}
           >
-            {/* Child components, such as markers, info windows, etc. */}
-            <></>
+            <Marker position={center} />
           </GoogleMap>
         ) : (
           <></>

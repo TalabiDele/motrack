@@ -23,13 +23,27 @@ function App() {
   return (
     <div className="App">
       {user ? <UserNav /> : <Nav />}
-      {location.pathname === "login" ||
-        (location.pathname === "register" && <HomeNav />)}
+      {(location.pathname === "/login" ||
+        location.pathname === "/register") && <HomeNav />}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/find" element={<Find />} />
+        <Route
+          path="/"
+          element={user ? <Navigate to={"/find"} replace={true} /> : <Home />}
+        />
+        <Route
+          path="/login"
+          element={user ? <Navigate to={"/find"} replace={true} /> : <Login />}
+        />
+        <Route
+          path="/register"
+          element={
+            user ? <Navigate to={"/find"} replace={true} /> : <Register />
+          }
+        />
+        <Route
+          path="/find"
+          element={user ? <Find /> : <Navigate to={"/login"} replace={true} />}
+        />
       </Routes>
     </div>
   );

@@ -6,9 +6,11 @@ import logo from "../imgs/motrackLogo.png";
 const HomeNav = () => {
   return (
     <Container>
-      <Link href="/">
-        <img src={logo} alt="logo" width={150} />
-      </Link>
+      <div className="absolute top-0 left-0 right-0 bottom-0 grid justify-items-center">
+        <Link href="/" className="">
+          <img src={logo} alt="logo" width={100} className=" mt-[2rem]" />
+        </Link>
+      </div>
     </Container>
   );
 };
