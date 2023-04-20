@@ -16,6 +16,7 @@ import { API_URL } from "../config";
 import { motion as m } from "framer-motion";
 import Circle from "../Circle";
 import AddCircle from "../AddCircle";
+import Request from "../Request";
 
 const UserNav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -221,6 +222,7 @@ const UserNav = () => {
           >
             {isCircle && <Circle />}
             {isAdd && <AddCircle />}
+            {isRequest && <Request />}
           </div>
         </div>
       </div>

@@ -28,7 +28,7 @@ const MarkerComponent = () => {
   return (
     <div>
       <div className="container">
-        {user.circle.map((e) => (
+        {user?.circle.map((e) => (
           <Marker position={[e.lat, e.lng]} key={e.id} icon={createIcon(e)}>
             <Popup>
               A pretty CSS3 popup. <br /> Easily customizable.

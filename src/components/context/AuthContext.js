@@ -248,33 +248,32 @@ export const AuthProvider = ({ children }) => {
 
   // Login
   const login = async ({ email: identifier, password }) => {
-    const res = await fetch(`${API_URL}/auth/local?populate=deep`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        identifier,
-        password,
-      }),
-    });
+    const res = await fetch(
+      `${API_URL}/auth/local?populate[circle][populate][0]=image`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identifier,
+          password,
+        }),
+      }
+    );
 
     const data = await res.json();
 
     console.log(data);
 
     if (res.ok) {
-      setUser(data.user);
-      // setUserData(data);
-      // router.push("/find");
-
       const decoded = jwt(data.jwt);
 
       cookies.set("tracker_authorization", data.jwt, {
         expires: new Date(decoded.exp * 1000),
       });
 
-      // checkUserLoggedIn();
+      checkUserLoggedIn();
     } else {
       setErrorMessage(data.message);
       setError(true);
