@@ -177,18 +177,21 @@ export const AuthProvider = ({ children }) => {
 
   // Register
   const register = async ({ number, password, email, username }) => {
-    const res = await fetch(`${API_URL}/auth/local/register?populate=deep`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        number,
-        password,
-        email,
-      }),
-    });
+    const res = await fetch(
+      `${API_URL}/auth/local/register?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          number,
+          password,
+          email,
+        }),
+      }
+    );
 
     const data = await res.json();
 
@@ -249,7 +252,7 @@ export const AuthProvider = ({ children }) => {
   // Login
   const login = async ({ email: identifier, password }) => {
     const res = await fetch(
-      `${API_URL}/auth/local?populate[circle][populate][0]=image`,
+      `${API_URL}/auth/local?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
       {
         method: "POST",
         headers: {
@@ -291,7 +294,7 @@ export const AuthProvider = ({ children }) => {
   // Check user logged in
   const checkUserLoggedIn = async () => {
     const res = await fetch(
-      `${API_URL}/users/me?populate[circle][populate][0]=image`,
+      `${API_URL}/users/me?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
       {
         method: "GET",
         headers: {
