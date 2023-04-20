@@ -1,90 +1,105 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Container } from "./style";
-import useGeolocation from "react-hook-geolocation";
-import { FiMapPin } from "react-icons/fi";
-import {
-  useLoadScript,
-  GoogleMap,
-  Marker,
-  useJsApiLoader,
-  LoadScript,
-  MarkerF,
-} from "@react-google-maps/api";
-import Geocode from "react-geocode";
 import { useGeolocated } from "react-geolocated";
 import { GiConsoleController } from "react-icons/gi";
 import AuthContext from "../context/AuthContext";
+import "leaflet/dist/leaflet.css";
+import { MapContainer, TileLayer, Popup, Marker } from "react-leaflet";
+import { useMap } from "react-leaflet";
+// import { useLeafletContext } from "@react-leaflet/core";
+import { Icon } from "leaflet";
+import userImage from "../imgs/userImage.png";
+import MarkerComponent from "./MarkerComponent";
 
 const MapComponent = () => {
-  const [address, setAddress] = useState("");
   const [location, setLocation] = useState({ lat: null, lng: null });
   const [error, setError] = useState(null);
-  const [position, setPosition] = useState([]);
-  const [map, setMap] = useState(null);
+  // const [map, setMap] = useState(null);
+  const [isHover, setIsHover] = useState(false);
+  const [isUser, setIsUser] = useState(null);
 
-  const { user, lati, long, center } = useContext(AuthContext);
+  const {
+    user,
+    lati,
+    long,
+    center,
+    address,
+    city,
+    state,
+    country,
+    position,
+    setPosition,
+  } = useContext(AuthContext);
 
-  console.log(user.id);
+  console.log(position);
 
-  useEffect(() => {}, []);
+  // useEffect(() => {
+  //   setPosition([lati, long]);
+
+  //   console.log(position);
+  // }, [lati, long, setPosition, position]);
 
   const containerStyle = {
     width: "100%",
     height: "100vh",
   };
 
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: "AIzaSyDS18virAJok2GzZcYEPNcPkT_Y1q2C2cc",
-  });
+  // const { isLoaded } = useJsApiLoader({
+  //   id: "google-map-script",
+  //   googleMapsApiKey: "AIzaSyDS18virAJok2GzZcYEPNcPkT_Y1q2C2cc",
+  // });
 
-  const onLoad = React.useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds(center);
-    map.fitBounds(bounds);
-    setMap(map);
-  }, []);
+  // const onLoad = React.useCallback(
+  //   function callback(map) {
+  //     const bounds = new window.google.maps.LatLngBounds(center);
+  //     map.fitBounds(bounds);
+  //     setMap(map);
+  //   },
+  //   [center]
+  // );
 
-  const onUnmount = React.useCallback(function callback(map) {
-    setMap(null);
-  }, []);
+  const handleHoverCard = (e) => {
+    setIsUser(e);
+
+    console.log(isUser.username);
+
+    setIsHover(true);
+
+    return (
+      isHover && (
+        <p className=" relative z-[100] text-4xl bg-white">{isUser.username}</p>
+      )
+    );
+  };
+
+  const handleRemoveCard = (e) => {
+    setIsHover(false);
+
+    setIsUser(null);
+  };
+
+  const createIcon = (e) => {
+    const customIcon = new Icon({
+      iconUrl: `${e.image ? e.image.url : userImage}`,
+      iconSize: [50, 50],
+    });
+
+    return customIcon;
+  };
 
   return (
     <Container>
-      <div className="">
-        {isLoaded ? (
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={12}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-            options={{
-              fullscreenControl: false,
-              zoomControl: false,
-              scaleControl: true,
-              mapTypeControl: false,
-              streetViewControl: false,
-            }}
-          >
-            <Marker position={center} />
-          </GoogleMap>
-        ) : (
-          <></>
-        )}
-      </div>
+      {lati && long && (
+        <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <MarkerComponent />
+        </MapContainer>
+      )}
     </Container>
   );
 };
 
 export default MapComponent;
-
-/* <LoadScript googleMapsApiKey="AIzaSyDS18virAJok2GzZcYEPNcPkT_Y1q2C2cc">
-          <GoogleMap
-            zoom={20}
-            center={center}
-            mapContainerClassName="map-container"
-          >
-            <Marker icon={<FiMapPin />} position={center} />
-            <p>{address}</p>
-          </GoogleMap>
-        </LoadScript> */

@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Find from "./pages/Find";
 import HomeNav from "./components/HomeNav/HomeNav";
+import { AnimatePresence } from "framer-motion";
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -25,26 +26,32 @@ function App() {
       {user ? <UserNav /> : <Nav />}
       {(location.pathname === "/login" ||
         location.pathname === "/register") && <HomeNav />}
-      <Routes>
-        <Route
-          path="/"
-          element={user ? <Navigate to={"/find"} replace={true} /> : <Home />}
-        />
-        <Route
-          path="/login"
-          element={user ? <Navigate to={"/find"} replace={true} /> : <Login />}
-        />
-        <Route
-          path="/register"
-          element={
-            user ? <Navigate to={"/find"} replace={true} /> : <Register />
-          }
-        />
-        <Route
-          path="/find"
-          element={user ? <Find /> : <Navigate to={"/login"} replace={true} />}
-        />
-      </Routes>
+      <AnimatePresence>
+        <Routes>
+          <Route
+            path="/"
+            element={user ? <Navigate to={"/find"} replace={true} /> : <Home />}
+          />
+          <Route
+            path="/login"
+            element={
+              user ? <Navigate to={"/find"} replace={true} /> : <Login />
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              user ? <Navigate to={"/find"} replace={true} /> : <Register />
+            }
+          />
+          <Route
+            path="/find"
+            element={
+              user ? <Find /> : <Navigate to={"/login"} replace={true} />
+            }
+          />
+        </Routes>
+      </AnimatePresence>
     </div>
   );
 }
