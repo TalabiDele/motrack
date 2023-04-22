@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../context/AuthContext";
-import { GiHamburgerMenu } from "react-icons/gi";
+import { MdOutlineMyLocation } from "react-icons/md";
 import {
   HiStatusOnline,
   HiStatusOffline,
@@ -23,6 +23,7 @@ const UserNav = () => {
   const [searchValue, setSearchValue] = useState("");
   const [isActive, setIsActive] = useState(false);
   const [isInactive, setIsInactive] = useState(false);
+  const [isLocate, setIsLocate] = useState(false);
 
   const {
     user,
@@ -44,6 +45,8 @@ const UserNav = () => {
     setIsAdd,
     isRequest,
     setIsRequest,
+    map,
+    setPosition,
   } = useContext(AuthContext);
 
   useEffect(() => {
@@ -122,6 +125,17 @@ const UserNav = () => {
 
   const handleClose = () => {
     setIsOpen(false);
+  };
+
+  const handlePosition = (e) => {
+    setPosition([parseFloat(e.lat), parseFloat(e.lng)]);
+
+    map.setView([parseFloat(e.lat), parseFloat(e.lng)], map.getZoom(), {
+      animate: true,
+      pan: {
+        duration: 2,
+      },
+    });
   };
 
   return (
@@ -229,6 +243,13 @@ const UserNav = () => {
             {isCircle && <Circle />}
             {isAdd && <AddCircle />}
             {isRequest && <Request />}
+          </div>
+
+          <div
+            className=" text-3xl text-primary_blue hover:bg-primary hover:text-white p-[0.5rem] cursor-pointer transition-all duration-300 ease-in-out rounded-full self-end flex justify-center items-center bg-white backdrop-filter backdrop-blur-md bg-opacity-50 h-[4rem] w-[4rem] relative -bottom-[20rem]"
+            onClick={() => handlePosition(user)}
+          >
+            <MdOutlineMyLocation />
           </div>
         </div>
       </div>
