@@ -114,7 +114,7 @@ const AddCircle = () => {
         </form>
 
         <div className=" mt-[1rem]">
-          {isCurrent !== undefined && (
+          {isCurrent && (
             <div className=" font-medium text-center">
               <h1>User already in your circle</h1>
             </div>
