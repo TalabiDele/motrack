@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "./context/AuthContext";
 import { motion as m } from "framer-motion";
 import { MdCancel } from "react-icons/md";
@@ -6,9 +6,29 @@ import userImage from "./imgs/userImage.png";
 import { API_URL } from "./config";
 
 const Request = () => {
-  const { isRequest, setIsRequest, user } = useContext(AuthContext);
+  const [reqs, setReqs] = useState([]);
 
-  console.log(user.requests);
+  const {
+    isRequest,
+    setIsRequest,
+    user,
+    checkUserLoggedIn,
+    loading,
+    setLoading,
+  } = useContext(AuthContext);
+
+  useEffect(() => {
+    // user.requests.forEach((e) => {
+    //   //   setReqs(e);
+    //   console.log(e);
+    // });
+
+    console.log(user);
+
+    setReqs(user.requests);
+
+    console.log(reqs);
+  }, [user, setReqs, reqs]);
 
   const bgVariants = {
     visible: {
@@ -19,21 +39,20 @@ const Request = () => {
     },
   };
 
-  const handleRequest = async (e) => {
-    const receiver = await fetch(
-      `${API_URL}/users/${user.id}?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: {
-            circle: [e],
-          },
-        }),
-      }
-    );
+  const handleRequest = async (e, r) => {
+    setLoading(true);
+
+    console.log(e);
+
+    const receiver = await fetch(`${API_URL}/users/${user.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        circle: [...user.circle, e.id],
+      }),
+    });
 
     const sender = await fetch(`${API_URL}/users/${e.id}`, {
       method: "PUT",
@@ -41,17 +60,34 @@ const Request = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        data: {
-          circle: [user],
-        },
+        circle: [...e.circle, user.id],
       }),
     });
+
+    handleDelete(r);
 
     const receiverData = await receiver.json();
     const senderData = await sender.json();
 
-    console.log(receiverData);
-    console.log(senderData);
+    setLoading(false);
+  };
+
+  const handleDelete = async (e) => {
+    setLoading(true);
+    console.log(e);
+
+    const res = await fetch(`${API_URL}/requests/${e.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+
+    checkUserLoggedIn();
+
+    setLoading(false);
   };
 
   return (
@@ -77,33 +113,42 @@ const Request = () => {
           />
         </div>
 
-        {user.requests?.map((e) =>
-          e.senders.map((sent) => (
-            <div
-              className="flex justify-start mb-[1rem] bg-white rounded-3xl shadow-sm p-[1rem] transition-all duration-300 ease-in-out items-center"
-              key={sent.id}
-            >
-              <img
-                src={sent.image ? sent.image.url : userImage}
-                alt=""
-                className=" w-[4rem] h-[4rem] rounded-full object-cover mr-[0.5rem] border-2 border-primary p-[2px]"
-              />
-              <div className=" text-gray-600">
-                <h1 className=" font-bold">{sent.username}</h1>
+        <h1 className=" font-medium text-center">
+          You have {reqs?.length} request(s)
+        </h1>
 
-                <div className=" flex mt-[0.5rem]">
-                  <button
-                    className=" bg-primary text-text hover:bg-btn_hover rounded-lg py-[0.1rem] px-[1rem] transition-all duration-300 ease-in-out mr-[0.5rem]"
-                    onClick={() => handleRequest(sent)}
-                  >
-                    Accept
-                  </button>
-                  <button className=" bg-cream text-black hover:bg-light rounded-lg py-[0.1rem] px-[1rem] transition-all duration-300 ease-in-out">
-                    Delete
-                  </button>
+        {reqs?.map((e) =>
+          e.senders.map((sent) => (
+            <>
+              <div
+                className="flex justify-start mb-[1rem] bg-white rounded-3xl shadow-sm p-[1rem] transition-all duration-300 ease-in-out items-center"
+                key={sent.id}
+              >
+                <img
+                  src={sent.image ? sent.image.url : userImage}
+                  alt=""
+                  className=" w-[4rem] h-[4rem] rounded-full object-cover mr-[0.5rem] border-2 border-primary p-[2px]"
+                />
+                <div className=" text-gray-600">
+                  <h1 className=" font-bold">{sent.username}</h1>
+
+                  <div className=" flex mt-[0.5rem]">
+                    <button
+                      className=" bg-primary text-text hover:bg-btn_hover rounded-lg py-[0.1rem] px-[1rem] transition-all duration-300 ease-in-out mr-[0.5rem]"
+                      onClick={() => handleRequest(sent, e)}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      className=" bg-cream text-black hover:bg-light rounded-lg py-[0.1rem] px-[1rem] transition-all duration-300 ease-in-out"
+                      onClick={() => handleDelete(e)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </>
           ))
         )}
       </div>

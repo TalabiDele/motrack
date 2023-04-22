@@ -100,6 +100,8 @@ const UserNav = () => {
     setIsRequest(false);
   };
 
+  console.log(user);
+
   const handleIsAdd = () => {
     setIsAdd(true);
 
@@ -153,7 +155,11 @@ const UserNav = () => {
             </div> */}
 
             <div className=" flex items-center">
-              <img src={userImage} alt="" className=" w-[2rem]" />
+              <img
+                src={user.image ? user.image.url : userImage}
+                alt=""
+                className=" w-[3rem] h-[3rem] rounded-full border border-primary p-[2px] object-cover"
+              />
             </div>
           </div>
         </div>

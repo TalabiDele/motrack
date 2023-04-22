@@ -25,17 +25,12 @@ export const AuthProvider = ({ children }) => {
   const [map, setMap] = useState(null);
   const [isAdd, setIsAdd] = useState(false);
   const [isRequest, setIsRequest] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const cookies = new Cookies();
 
   useEffect(() => {
     checkUserLoggedIn();
-
-    if (user) {
-      console.log(user.id);
-    }
-
-    console.log(isOnline);
 
     navigator.geolocation.watchPosition(function (position) {
       setCenter({
@@ -294,7 +289,7 @@ export const AuthProvider = ({ children }) => {
   // Check user logged in
   const checkUserLoggedIn = async () => {
     const res = await fetch(
-      `${API_URL}/users/me?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
+      `${API_URL}/users/me?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image&populate[requests][populate][5]=senders.circle&populate=image`,
       {
         method: "GET",
         headers: {
@@ -351,6 +346,8 @@ export const AuthProvider = ({ children }) => {
         setIsAdd,
         isRequest,
         setIsRequest,
+        loading,
+        setLoading,
       }}
     >
       {children}

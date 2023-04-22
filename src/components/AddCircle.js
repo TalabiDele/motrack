@@ -40,6 +40,24 @@ const AddCircle = () => {
     setLoading(false);
   };
 
+  // const handleMembership = async (e) => {
+  //   const res = await fetch(`${API_URL}/groups`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       data: {
+  //         user,
+  //       },
+  //     }),
+  //   });
+
+  //   const data = await res.json();
+
+  //   console.log(data);
+  // };
+
   const handleRequest = async (e) => {
     setLoading(true);
 
