@@ -24,39 +24,25 @@ const AddCircle = () => {
     const data = await res.json();
 
     console.log(data);
+    const present = user.circle.find((current) => {
+      // if (data[0].id === current.id) {
+      //   setIsCurrent(true);
 
-    data.forEach((search) => {
-      user.circle.forEach((current) => {
-        if (search.id === current.id) {
-          setIsCurrent(true);
-        } else {
-          setIsCurrent(false);
-        }
-      });
+      //   console.log(isCurrent);
+      // } else {
+      //   setIsCurrent(false);
+      //   // console.log(data[0].id, current.id);
+      // }
+
+      return data[0].id === current.id;
     });
+
+    setIsCurrent(present);
 
     setSearchData(data);
 
     setLoading(false);
   };
-
-  // const handleMembership = async (e) => {
-  //   const res = await fetch(`${API_URL}/groups`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       data: {
-  //         user,
-  //       },
-  //     }),
-  //   });
-
-  //   const data = await res.json();
-
-  //   console.log(data);
-  // };
 
   const handleRequest = async (e) => {
     setLoading(true);
@@ -128,12 +114,13 @@ const AddCircle = () => {
         </form>
 
         <div className=" mt-[1rem]">
-          {searchData?.map((e) =>
-            isCurrent ? (
-              <div className="" key={e.id}>
-                <h1>User already in your circle</h1>
-              </div>
-            ) : (
+          {isCurrent !== undefined && (
+            <div className=" font-medium text-center">
+              <h1>User already in your circle</h1>
+            </div>
+          )}
+          {isCurrent === undefined &&
+            searchData?.map((e) => (
               <div
                 className=" flex items-center justify-start mb-[1rem] bg-white rounded-3xl shadow-sm p-[1rem] transition-all duration-300 ease-in-out"
                 key={e.id}
@@ -156,8 +143,7 @@ const AddCircle = () => {
                   </div>
                 </div>
               </div>
-            )
-          )}
+            ))}
           {/* {user.circle.map((current) => (
                 <div className="" key={current.id}>
               {searchData?.find((e) => (

@@ -35,6 +35,12 @@ const MarkerComponent = () => {
             </Popup>
           </Marker>
         ))}
+
+        <Marker position={[user.lat, user.lng]} icon={createIcon(user)}>
+          <Popup>
+            A pretty CSS3 popup. <br /> Easily customizable.
+          </Popup>
+        </Marker>
       </div>
     </div>
   );
