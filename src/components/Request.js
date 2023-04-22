@@ -105,7 +105,11 @@ const Request = () => {
       }}
       className=" ml-[2rem] w-[20rem]"
     >
-      <div className=" bg-white backdrop-filter backdrop-blur-md bg-opacity-50 rounded-3xl p-[1rem] shadow-gray/70 shadow-lg transition-all duration-300 ease-in-out relative">
+      <div
+        className={`${
+          user.requests.length > 4 && " h-[35rem]"
+        } bg-white backdrop-filter backdrop-blur-md bg-opacity-50 rounded-3xl p-[1rem] shadow-gray/70 shadow-lg transition-all duration-300 ease-in-out relative`}
+      >
         <div className=" w-[100%] flex justify-end">
           <MdCancel
             className=" text-2xl cursor-pointer absolute right-0 -top-[2rem] mb-[0.5rem] "
