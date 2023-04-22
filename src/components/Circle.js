@@ -62,6 +62,12 @@ const Circle = () => {
         }}
         className=" ml-[2rem] w-[20rem]"
       >
+        <div className=" w-[100%] flex justify-end">
+          <MdCancel
+            className=" text-2xl cursor-pointer absolute right-0 -top-[2rem] mb-[0.5rem]"
+            onClick={() => setIsCircle(false)}
+          />
+        </div>
         <div
           className={`${
             user.circle.length > 4 && " h-[35rem]"
