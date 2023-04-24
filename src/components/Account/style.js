@@ -28,7 +28,7 @@ export const Container = styled.div`
     }
 
     span {
-      color: rgba(0, 67, 241, 1);
+      /* color: rgba(0, 67, 241, 1); */
     }
   }
 
@@ -89,8 +89,8 @@ export const Container = styled.div`
 
       &:hover {
         color: #eef6ff;
-        background: #2b478b;
-        border: 2px solid #2b478b;
+        background: #f19655;
+        border: 2px solid #f19655;
       }
     }
   }

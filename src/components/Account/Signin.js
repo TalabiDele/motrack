@@ -6,14 +6,60 @@ const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { login, user } = useContext(AuthContext);
+  const {
+    login,
+    user,
+    error,
+    setError,
+    errorMessage,
+    setErrorMessage,
+    eError,
+    setEError,
+    passError,
+    setPassError,
+    eMessage,
+    setEMessage,
+    passMessage,
+    setPassMessage,
+  } = useContext(AuthContext);
 
   console.log(user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    login({ email, password });
+    if (password === "" && email === "") {
+      // setError(true);
+      setEError(true);
+      setPassError(true);
+
+      setEMessage("Email field required");
+      setPassMessage("Password field requied");
+      // setErrorMessage("Email and Password fields required");
+
+      setTimeout(() => {
+        setEError(false);
+        setPassError(false);
+      }, 5000);
+    } else if (password === "") {
+      setPassError(true);
+      setPassMessage("Password field is required");
+
+      setTimeout(() => {
+        setPassError(false);
+      }, 5000);
+    } else if (email === "") {
+      setEError(true);
+      setEMessage("Email field required");
+
+      setTimeout(() => {
+        setEError(false);
+      }, 5000);
+    } else {
+      setEError(false);
+      setPassError(false);
+      login({ email, password });
+    }
   };
 
   return (
@@ -21,27 +67,77 @@ const Signin = () => {
       <div className="container">
         <div className="wrapper">
           <h1>Welcome back</h1>
+          {error && (
+            <div
+              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50"
+              role="alert"
+            >
+              <span className="font-medium">{errorMessage}</span>
+            </div>
+          )}
           <form onSubmit={handleSubmit}>
-            <label htmlFor="email">Enter your email address</label>
-            <input
-              id="email"
-              name="email"
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="mail@mymail.com"
-              className="input"
-            />
-            <label htmlFor="password">Enter your password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="************"
-              className="input"
-            />
+            <div className=" w-[100%] mb-[1rem]">
+              <div className="relative z-0 w-[100%]">
+                <input
+                  type="email"
+                  id="email"
+                  aria-describedby="standard_error_help"
+                  className={` ${
+                    eError && "text-red-600 border-b-red-600"
+                  } block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-[#e6eaf0] appearance-none focus:outline-none focus:ring-0 focus:border-[#e6eaf0] peer`}
+                  placeholder=" "
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <label
+                  for="email"
+                  className={` ${
+                    eError && "text-red-600"
+                  } absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 font-medium`}
+                >
+                  Enter email
+                </label>
+              </div>
+              {eError && (
+                <p
+                  id="standard_error_help"
+                  class="mt-2 text-xs text-red-600 dark:text-red-400"
+                >
+                  <span className="font-medium">Oh, snapp!</span> {eMessage}
+                </p>
+              )}
+            </div>
+            <div className=" w-[100%]">
+              <div class="relative z-0 w-[100%]">
+                <input
+                  type="password"
+                  id="password"
+                  aria-describedby="standard_error_help"
+                  className={`${
+                    passError && " border-b-red-600"
+                  } block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-[#e6eaf0] appearance-none focus:outline-none focus:ring-0 focus:border-[#e6eaf0] peer`}
+                  placeholder=" "
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <label
+                  for="email"
+                  className={` ${
+                    passError && "text-red-600"
+                  } absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 font-medium`}
+                >
+                  Enter password
+                </label>
+              </div>
+              {passError && (
+                <p
+                  id="standard_error_help"
+                  className="mt-2 text-xs text-red-600 dark:text-red-400"
+                >
+                  <span className="font-medium">Oh, snapp!</span> {passMessage}
+                </p>
+              )}
+            </div>
             <div className="actions">
               <div className="save">
                 <input

@@ -26,6 +26,10 @@ export const AuthProvider = ({ children }) => {
   const [isAdd, setIsAdd] = useState(false);
   const [isRequest, setIsRequest] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [passError, setPassError] = useState(false);
+  const [passMessage, setPassMessage] = useState("");
+  const [eError, setEError] = useState(false);
+  const [eMessage, setEMessage] = useState("");
 
   const cookies = new Cookies();
 
@@ -337,6 +341,16 @@ export const AuthProvider = ({ children }) => {
         setLoading,
         error,
         setError,
+        errorMessage,
+        setErrorMessage,
+        passError,
+        setPassError,
+        eError,
+        setEError,
+        eMessage,
+        setEMessage,
+        passMessage,
+        setPassMessage,
       }}
     >
       {children}
