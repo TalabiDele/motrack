@@ -269,9 +269,25 @@ export const AuthProvider = ({ children }) => {
 
       checkUserLoggedIn();
     } else {
-      setErrorMessage(data.message);
+      setErrorMessage(data.error.message);
       setError(true);
+
+      setPassError(true);
+      setEError(true);
+
+      setTimeout(() => {
+        setError(false);
+        setPassError(false);
+        setEError(false);
+      }, 10000);
     }
+
+    // if(res.staus === 400) {
+    //   setPassError(true)
+    //   setEError(true)
+
+    //   setPassMessage
+    // }
 
     setLoading(false);
   };

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import { Container } from "./style";
+import { Link } from "react-router-dom";
 
 const Signin = () => {
   const [email, setEmail] = useState("");
@@ -84,8 +85,10 @@ const Signin = () => {
                   id="email"
                   aria-describedby="standard_error_help"
                   className={` ${
-                    eError && "text-red-600 border-b-red-600"
-                  } block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-[#e6eaf0] appearance-none focus:outline-none focus:ring-0 focus:border-[#e6eaf0] peer`}
+                    eError
+                      ? "text-red-600 border-b-red-600"
+                      : "text-gray-900 border-[#e6eaf0]"
+                  } block py-2.5 px-0 w-full text-sm  bg-transparent border-0 border-b-2  appearance-none focus:outline-none focus:ring-0 focus:border-[#e6eaf0] peer`}
                   placeholder=" "
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -115,8 +118,10 @@ const Signin = () => {
                   id="password"
                   aria-describedby="standard_error_help"
                   className={`${
-                    passError && " border-b-red-600"
-                  } block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-[#e6eaf0] appearance-none focus:outline-none focus:ring-0 focus:border-[#e6eaf0] peer`}
+                    passError
+                      ? "text-red-600 border-b-red-600"
+                      : "text-gray-900 border-[#e6eaf0]"
+                  } block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-[#e6eaf0] peer`}
                   placeholder=" "
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -151,6 +156,14 @@ const Signin = () => {
               </div>
               <p>Forgot Password</p>
             </div>
+
+            <p className="">
+              Don't have an account?{" "}
+              <Link to="/register" className=" text-primary_blue font-bold">
+                Register
+              </Link>
+            </p>
+
             {loading ? (
               <div
                 role="status"
