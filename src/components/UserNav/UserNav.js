@@ -17,13 +17,12 @@ import { motion as m } from "framer-motion";
 import Circle from "../Circle";
 import AddCircle from "../AddCircle";
 import Request from "../Request";
+import SearchMember from "../SearchMember";
 
 const UserNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [isActive, setIsActive] = useState(false);
-  const [isInactive, setIsInactive] = useState(false);
-  const [isLocate, setIsLocate] = useState(false);
+  const [searchItem, setSearchItem] = useState(null);
 
   const {
     user,
@@ -47,6 +46,8 @@ const UserNav = () => {
     setIsRequest,
     map,
     setPosition,
+    setError,
+    error,
   } = useContext(AuthContext);
 
   useEffect(() => {
@@ -103,8 +104,6 @@ const UserNav = () => {
     setIsRequest(false);
   };
 
-  console.log(user);
-
   const handleIsAdd = () => {
     setIsAdd(true);
 
@@ -141,14 +140,18 @@ const UserNav = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    console.log(user.circle[0].username);
-    console.log(searchValue);
+    if (searchValue === "") {
+      setError(true);
+    } else {
+      setError(false);
+      const search = user.circle.filter((person) => {
+        // return searchValue === person.username.toLowerCase();
+        return person.username.toLowerCase().includes(searchValue);
+      });
+      setSearchItem(search);
 
-    const search = user.circle.find((person) => {
-      return searchValue === person.username.toLowerCase();
-    });
-
-    console.log(search);
+      setSearchValue("");
+    }
   };
 
   return (
@@ -181,10 +184,6 @@ const UserNav = () => {
           </div>
 
           <div className=" flex items-center ">
-            {/* <div className=" px-[2rem] border-r-gray-300 border-r-2 mr-[2rem]">
-              <BsFillBellFill className=" text-gray-500 text-xl" />
-            </div> */}
-
             <div className=" flex items-center">
               <img
                 src={user.image ? user.image.url : userImage}
@@ -269,6 +268,10 @@ const UserNav = () => {
             <MdOutlineMyLocation />
           </div>
         </div>
+      </div>
+
+      <div className=" relative w-[40rem] mx-auto top-[8rem]">
+        <SearchMember searchItem={searchItem} setSearchItem={setSearchItem} />
       </div>
     </div>
   );

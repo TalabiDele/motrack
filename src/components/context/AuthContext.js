@@ -333,6 +333,8 @@ export const AuthProvider = ({ children }) => {
         setIsRequest,
         loading,
         setLoading,
+        error,
+        setError,
       }}
     >
       {children}
