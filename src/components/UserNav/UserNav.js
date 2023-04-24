@@ -18,11 +18,13 @@ import Circle from "../Circle";
 import AddCircle from "../AddCircle";
 import Request from "../Request";
 import SearchMember from "../SearchMember";
+import Profile from "../Profile";
 
 const UserNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchItem, setSearchItem] = useState(null);
+  const [isProfile, setIsProfile] = useState(false);
 
   const {
     user,
@@ -157,7 +159,7 @@ const UserNav = () => {
   return (
     <div className=" fixed z-10 right-0 left-0">
       <div className=" h-[0rem]">
-        <div className=" bg-white backdrop-filter backdrop-blur-md bg-opacity-50 w-[60vw] mx-auto px-[3rem] py-[1rem] flex justify-between items-center rounded-3xl relative top-[2rem] shadow-gray/70 shadow-lg">
+        <div className=" bg-white backdrop-filter backdrop-blur-md bg-opacity-50 w-[70vw] mx-auto px-[3rem] py-[1rem] flex justify-between items-center rounded-3xl relative top-[2rem] shadow-gray/70 shadow-lg">
           <div className=" ">
             <img src={logo} alt="" className=" w-[5rem]" />
           </div>
@@ -184,7 +186,10 @@ const UserNav = () => {
           </div>
 
           <div className=" flex items-center ">
-            <div className=" flex items-center">
+            <div
+              className=" flex items-center cursor-pointer"
+              onClick={() => setIsProfile(!isProfile)}
+            >
               <img
                 src={user.image ? user.image.url : userImage}
                 alt=""
@@ -272,6 +277,10 @@ const UserNav = () => {
 
       <div className=" relative w-[40rem] mx-auto top-[8rem]">
         <SearchMember searchItem={searchItem} setSearchItem={setSearchItem} />
+      </div>
+
+      <div className=" absolute w-[20rem] mx-auto top-[8rem] right-[19rem]">
+        <Profile isProfile={isProfile} setIsProfile={setIsProfile} />
       </div>
     </div>
   );

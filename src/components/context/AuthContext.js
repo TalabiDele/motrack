@@ -64,22 +64,24 @@ export const AuthProvider = ({ children }) => {
 
     // Send address to server
     const sendAddress = async () => {
-      const res = await fetch(`${API_URL}/users/${user.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          address,
-          city,
-          state,
-          country,
-        }),
-      });
+      if (user) {
+        const res = await fetch(`${API_URL}/users/${user.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            address,
+            city,
+            state,
+            country,
+          }),
+        });
 
-      const data = await res.json();
-      console.log(data);
+        const data = await res.json();
+        console.log(data);
+      }
     };
 
     if (lati && long) {

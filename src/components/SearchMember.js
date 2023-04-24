@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import AuthContext from "./context/AuthContext";
 import { motion as m } from "framer-motion";
-import { useEffect } from "react";
 import { MdCancel } from "react-icons/md";
 import { Scroll } from "./Scroll";
 

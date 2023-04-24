@@ -34,7 +34,7 @@ const MarkerComponent = () => {
             <Popup>
               <div className=" flex">
                 <img
-                  src={e.image.url}
+                  src={e.image ? e.image.url : userImage}
                   alt=""
                   className=" w-[3rem] h-[3rem] rounded-full border border-primary p-[2px] object-cover mr-[0.5rem]"
                 />
@@ -54,7 +54,7 @@ const MarkerComponent = () => {
           <Popup>
             <div className=" flex">
               <img
-                src={user.image.url}
+                src={user.image ? user.image.url : userImage}
                 alt=""
                 className=" w-[3rem] h-[3rem] rounded-full border border-primary p-[2px] object-cover mr-[0.5rem]"
               />
