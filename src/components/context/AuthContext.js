@@ -163,6 +163,7 @@ export const AuthProvider = ({ children }) => {
 
   // Register
   const register = async ({ number, password, email, username }) => {
+    setLoading(true);
     const res = await fetch(
       `${API_URL}/auth/local/register?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
       {
@@ -208,6 +209,8 @@ export const AuthProvider = ({ children }) => {
     } else {
       console.log("not working");
     }
+
+    setLoading(false);
   };
 
   const forgotPassword = async ({ email }) => {
@@ -237,6 +240,8 @@ export const AuthProvider = ({ children }) => {
 
   // Login
   const login = async ({ email: identifier, password }) => {
+    setLoading(true);
+
     const res = await fetch(
       `${API_URL}/auth/local?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
       {
@@ -267,6 +272,8 @@ export const AuthProvider = ({ children }) => {
       setErrorMessage(data.message);
       setError(true);
     }
+
+    setLoading(false);
   };
 
   // Logout
