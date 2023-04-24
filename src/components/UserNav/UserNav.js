@@ -138,6 +138,19 @@ const UserNav = () => {
     });
   };
 
+  const handleSearch = async (e) => {
+    e.preventDefault();
+
+    console.log(user.circle[0].username);
+    console.log(searchValue);
+
+    const search = user.circle.find((person) => {
+      return searchValue === person.username.toLowerCase();
+    });
+
+    console.log(search);
+  };
+
   return (
     <div className=" fixed z-10 right-0 left-0">
       <div className=" h-[0rem]">
@@ -147,7 +160,11 @@ const UserNav = () => {
           </div>
 
           <div className="">
-            <form action="" className=" relative flex items-center">
+            <form
+              action=""
+              className=" relative flex items-center"
+              onSubmit={handleSearch}
+            >
               <input
                 type="text"
                 id="search"

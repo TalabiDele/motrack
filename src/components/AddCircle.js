@@ -25,15 +25,6 @@ const AddCircle = () => {
 
     console.log(data);
     const present = user.circle.find((current) => {
-      // if (data[0].id === current.id) {
-      //   setIsCurrent(true);
-
-      //   console.log(isCurrent);
-      // } else {
-      //   setIsCurrent(false);
-      //   // console.log(data[0].id, current.id);
-      // }
-
       return data[0].id === current.id;
     });
 
