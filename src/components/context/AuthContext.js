@@ -48,21 +48,6 @@ export const AuthProvider = ({ children }) => {
     });
 
     const handleAddress = async () => {
-      // const res = await fetch(
-      //   `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lati},${long}&lang=en-US&apiKey=Yy3HECWLFtygG-32pxcHEgsdBVKh2D66Nh26mZpiyzDgVNYZc87RpNo40Rzm1_yA3zuEZHArDnmlF_7CfiN4aQ`,
-      //   {
-      //     method: "GET",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       // "Access-Control-Allow-Origin": "*",
-      //     },
-      //   }
-      // );
-
-      // const data = res.json();
-
-      // console.log(data);
-
       fetch(
         `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lati},${long}&lang=en-US&apiKey=eyRgLUsagB0fqHPn9zAZIqLEa7I8SYSRPPo3RNbFLqk`
       )
@@ -98,7 +83,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     if (lati && long) {
-      // handleAddress();
+      handleAddress();
     }
 
     if (address && city && state && country) {

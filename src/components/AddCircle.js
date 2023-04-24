@@ -144,42 +144,6 @@ const AddCircle = () => {
                 </div>
               </div>
             ))}
-          {/* {user.circle.map((current) => (
-                <div className="" key={current.id}>
-              {searchData?.find((e) => (
-                <div className="" key={e.id}>
-                  {current.id === e.id ? (
-                    <div className="">
-                      <h1>User already in your circle</h1>
-                    </div>
-                  ) : (
-                    <div
-                      className=" flex items-center justify-start mb-[1rem] bg-white rounded-3xl shadow-sm p-[1rem] transition-all duration-300 ease-in-out"
-                      key={e.id}
-                    >
-                      <img
-                        src={e.image.url}
-                        alt=""
-                        className=" w-[3rem] h-[3rem] rounded-full border border-primary p-[2px] object-cover"
-                      />
-                      <div className=" ml-[1rem]">
-                        <h1 className=" text-lg font-bold">{e.username}</h1>
-
-                        <div className="">
-                          <button
-                            className=" bg-primary text-text rounded-md py-[0.2rem] px-[1rem] cursor-pointer hover:bg-btn_hover transition-all duration-300 ease-in-out"
-                            onClick={() => handleRequest(e)}
-                          >
-                            Send Request
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))} */}
         </div>
       </div>
     </m.div>
