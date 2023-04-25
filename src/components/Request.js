@@ -18,17 +18,11 @@ const Request = () => {
   } = useContext(AuthContext);
 
   useEffect(() => {
-    // user.requests.forEach((e) => {
-    //   //   setReqs(e);
-    //   console.log(e);
-    // });
-
-    console.log(user);
-
     setReqs(user.requests);
 
     console.log(reqs);
-  }, [user, setReqs, reqs]);
+    checkUserLoggedIn();
+  }, [user, setReqs, reqs, checkUserLoggedIn]);
 
   const bgVariants = {
     visible: {

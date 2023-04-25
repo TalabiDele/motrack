@@ -3,6 +3,7 @@ import AuthContext from "./context/AuthContext";
 import { motion as m } from "framer-motion";
 import { MdCancel } from "react-icons/md";
 import { API_URL } from "./config";
+import userImage from "./imgs/userImage.png";
 
 const AddCircle = () => {
   const [searchText, setSearchText] = useState("");
@@ -10,7 +11,7 @@ const AddCircle = () => {
   const [searchData, setSearchData] = useState(null);
   const [isCurrent, setIsCurrent] = useState(false);
 
-  const { isAdd, setIsAdd, user } = useContext(AuthContext);
+  const { isAdd, setIsAdd, user, checkUserLoggedIn } = useContext(AuthContext);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -54,6 +55,8 @@ const AddCircle = () => {
     const data = await res.json();
 
     console.log(data);
+
+    checkUserLoggedIn();
 
     setLoading(false);
   };
@@ -117,7 +120,7 @@ const AddCircle = () => {
                 key={e.id}
               >
                 <img
-                  src={e.image.url}
+                  src={e.image ? e.image.url : userImage}
                   alt=""
                   className=" w-[3rem] h-[3rem] rounded-full border border-primary p-[2px] object-cover"
                 />

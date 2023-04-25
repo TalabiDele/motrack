@@ -30,6 +30,10 @@ export const AuthProvider = ({ children }) => {
   const [passMessage, setPassMessage] = useState("");
   const [eError, setEError] = useState(false);
   const [eMessage, setEMessage] = useState("");
+  const [nameError, setNameError] = useState(false);
+  const [nameMessage, setNameMessage] = useState("");
+  const [numError, setNumError] = useState(false);
+  const [numMessage, setNumMessage] = useState("");
 
   const cookies = new Cookies();
 
@@ -61,7 +65,6 @@ export const AuthProvider = ({ children }) => {
           setCity(data.items[0].address.city);
           setState(data.items[0].address.state);
           setCountry(data.items[0].address.countryName);
-          console.log(data);
         })
         .catch((error) => console.error(error));
     };
@@ -84,7 +87,6 @@ export const AuthProvider = ({ children }) => {
         });
 
         const data = await res.json();
-        console.log(data);
       }
     };
 
@@ -106,63 +108,21 @@ export const AuthProvider = ({ children }) => {
     position,
     isOnline,
     setIsOnline,
+    token,
+    user,
+    checkUserLoggedIn,
   ]);
-
-  // Set user status
-  useEffect(() => {
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
-
-  const handleOnline = () => {
-    setIsOnline(true);
-    updateStatus(true);
-  };
-
-  const handleOffline = () => {
-    setIsOnline(false);
-    updateStatus(false);
-  };
-
-  const updateStatus = async (onlineStatus) => {
-    const date = Date.now();
-
-    const data = {
-      online: onlineStatus,
-      lastSeen: date.toLocaleString(),
-    };
-
-    if (user) {
-      const res = await fetch(`${API_URL}/users/${user.id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const response = await res.json();
-
-      console.log(response);
-    }
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updateStatus(isOnline);
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [isOnline]);
 
   // Send Location
 
   // Register
-  const register = async ({ number, password, email, username }) => {
+  const register = async ({
+    number,
+    password,
+    email,
+    username,
+    identifier,
+  }) => {
     setLoading(true);
     const res = await fetch(
       `${API_URL}/auth/local/register?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
@@ -176,6 +136,7 @@ export const AuthProvider = ({ children }) => {
           number,
           password,
           email,
+          identifier,
         }),
       }
     );
@@ -205,7 +166,7 @@ export const AuthProvider = ({ children }) => {
         expires: new Date(decoded.exp * 1000),
       });
 
-      // checkUserLoggedIn();
+      checkUserLoggedIn();
     } else {
       console.log("not working");
     }
@@ -374,6 +335,14 @@ export const AuthProvider = ({ children }) => {
         setEMessage,
         passMessage,
         setPassMessage,
+        nameError,
+        setNameError,
+        nameMessage,
+        setNameMessage,
+        numError,
+        setNumError,
+        numMessage,
+        setNumMessage,
       }}
     >
       {children}

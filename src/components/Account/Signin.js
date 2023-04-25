@@ -157,13 +157,6 @@ const Signin = () => {
               <p>Forgot Password</p>
             </div>
 
-            <p className="">
-              Don't have an account?{" "}
-              <Link to="/register" className=" text-primary_blue font-bold">
-                Register
-              </Link>
-            </p>
-
             {loading ? (
               <div
                 role="status"
@@ -190,6 +183,12 @@ const Signin = () => {
               <button type="submit">Login</button>
             )}
           </form>
+          <p className=" text-center mt-[1rem]">
+            Don't have an account?{" "}
+            <Link to="/register" className=" text-primary_blue font-bold">
+              Register
+            </Link>
+          </p>
         </div>
       </div>
     </Container>

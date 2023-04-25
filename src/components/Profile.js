@@ -6,9 +6,12 @@ import { Scroll } from "./Scroll";
 import { FcEditImage } from "react-icons/fc";
 import { API_URL } from "./config";
 import userImage from "./imgs/userImage.png";
+import { FaRegCopy } from "react-icons/fa";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const Profile = ({ isProfile, setIsProfile }) => {
   const [image, setImage] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   const { user, token, checkUserLoggedIn } = useContext(AuthContext);
 
@@ -87,7 +90,7 @@ const Profile = ({ isProfile, setIsProfile }) => {
           </div>
 
           <div className="bg-white backdrop-filter backdrop-blur-md bg-opacity-50 rounded-3xl p-[1rem] shadow-gray/70 shadow-lg transition-all duration-300 ease-in-out relative overflow-y-scroll scroll-smooth scroll">
-            <div className=" flex items-center">
+            <div className=" flex items-center justify-center">
               <div className="relative">
                 <input
                   type="file"
@@ -109,6 +112,24 @@ const Profile = ({ isProfile, setIsProfile }) => {
               <div className=" leading-[1.5] ml-[1rem]">
                 <h1 className=" font-bold">{user.username}</h1>
                 <p className=" ">{user.email}</p>
+                <div className=" mt-[0.5rem] w-[70%]">
+                  <p className=" bg-primary_blue text-white rounded-3xl py-[5px] px-[10px] text-center">
+                    {user.identifier}
+                  </p>
+                  <CopyToClipboard
+                    text={user.identifier}
+                    onCopy={() => setCopied(true)}
+                  >
+                    <div
+                      className={` flex items-center mt-[0.5rem] cursor-pointer text-primary font-bold`}
+                    >
+                      <p className=" mr-[5px]">
+                        {copied ? "Copied" : "Copy Id"}
+                      </p>
+                      <FaRegCopy />
+                    </div>
+                  </CopyToClipboard>
+                </div>
               </div>
             </div>
           </div>
