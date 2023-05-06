@@ -90,6 +90,7 @@ const Circle = () => {
                 <div
                   className=" flex justify-start mb-[1rem] bg-white rounded-3xl shadow-sm p-[1rem] cursor-pointer hover:shadow-md transition-all duration-300 ease-in-out"
                   onClick={() => handlePosition(circle)}
+                  key={circle.id}
                 >
                   <FaMapMarkerAlt className=" text-3xl text-primary mr-[0.5rem]" />
                   {/* <img

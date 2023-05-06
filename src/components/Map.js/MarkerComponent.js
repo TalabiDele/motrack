@@ -11,10 +11,10 @@ const MarkerComponent = () => {
 
   const mapObj = useMap();
 
+  console.log(user);
+
   useEffect(() => {
     setMap(mapObj);
-
-    console.log(map);
   }, [mapObj, setMap, map]);
 
   const createIcon = (e) => {
@@ -43,9 +43,14 @@ const MarkerComponent = () => {
 
                   <div className="">
                     <h1 className=" font-bold text-lg">{e.username}</h1>
-                    <h3 className="">
-                      {e.address}, {e.city}, {e.state}, {e.country}
-                    </h3>
+                    {user.address &&
+                      user.city &&
+                      user.state &&
+                      user.country && (
+                        <h3 className="">
+                          {e.address}, {e.city}, {e.state}, {e.country}
+                        </h3>
+                      )}
                   </div>
                 </div>
               </Popup>
@@ -63,9 +68,11 @@ const MarkerComponent = () => {
 
                 <div className="">
                   <h1 className=" font-bold text-lg">{user.username}</h1>
-                  <h3 className="">
-                    {user.address}, {user.city}, {user.state}, {user.country}
-                  </h3>
+                  {user.address && user.city && user.state && user.country && (
+                    <h3 className="">
+                      {user.address}, {user.city}, {user.state}, {user.country}
+                    </h3>
+                  )}
                 </div>
               </div>
             </Popup>

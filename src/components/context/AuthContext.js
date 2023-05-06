@@ -3,6 +3,11 @@ import { API_URL } from "../config/index";
 import jwt from "jwt-decode";
 import Cookies from "universal-cookie";
 import Geocode from "react-geocode";
+import { OpenStreetMapProvider } from "leaflet-geosearch";
+import { GeoSearchControl } from "leaflet-geosearch";
+import { useGeolocated } from "react-geolocated";
+import useGeolocation from "react-hook-geolocation";
+import toast, { Toaster } from "react-hot-toast";
 
 const AuthContext = createContext();
 
@@ -37,6 +42,14 @@ export const AuthProvider = ({ children }) => {
 
   const cookies = new Cookies();
 
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
+    useGeolocated({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      userDecisionTimeout: 5000,
+    });
+
   useEffect(() => {
     checkUserLoggedIn();
 
@@ -55,40 +68,19 @@ export const AuthProvider = ({ children }) => {
       setLong(parseFloat(position.coords.longitude));
     });
 
-    const handleAddress = async () => {
-      fetch(
-        `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lati},${long}&lang=en-US&apiKey=eyRgLUsagB0fqHPn9zAZIqLEa7I8SYSRPPo3RNbFLqk`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          setAddress(data.items[0].address.label);
-          setCity(data.items[0].address.city);
-          setState(data.items[0].address.state);
-          setCountry(data.items[0].address.countryName);
-        })
-        .catch((error) => console.error(error));
-    };
+    // if (coords) {
+    //   setCenter({
+    //     lat: parseFloat(coords.latitude),
+    //     lng: parseFloat(coords.longitude),
+    //   });
+
+    //   setPosition([parseFloat(coords.latitude), parseFloat(coords.longitude)]);
+
+    //   setLati(parseFloat(coords.latitude));
+    //   setLong(parseFloat(coords.longitude));
+    // }
 
     // Send address to server
-    const sendAddress = async () => {
-      if (user) {
-        const res = await fetch(`${API_URL}/users/${user.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            address,
-            city,
-            state,
-            country,
-          }),
-        });
-
-        const data = await res.json();
-      }
-    };
 
     if (lati && long) {
       handleAddress();
@@ -102,18 +94,57 @@ export const AuthProvider = ({ children }) => {
     city,
     state,
     country,
-    lati,
-    long,
-    setPosition,
-    position,
+    // lati,
+    // long,
+    // setPosition,
+    // position,
     isOnline,
     setIsOnline,
     token,
-    user,
-    checkUserLoggedIn,
   ]);
 
   // Send Location
+  const sendAddress = async () => {
+    if (user) {
+      const res = await fetch(`${API_URL}/users/${user.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          address,
+          city,
+          state,
+          country,
+        }),
+      });
+
+      const data = await res.json();
+    }
+  };
+
+  const handleAddress = async () => {
+    const res = await fetch(
+      `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&langCode=EN&location=${long},${lati}`
+    );
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setAddress(data.address.Address);
+      setCity(data.address.City);
+      setState(data.address.Region);
+      setCountry(data.address.CntryName);
+    }
+
+    sendAddress();
+
+    console.log(address);
+    console.log(city);
+    console.log(state);
+    console.log(country);
+  };
 
   // Register
   const register = async ({
@@ -124,6 +155,7 @@ export const AuthProvider = ({ children }) => {
     identifier,
   }) => {
     setLoading(true);
+    const toastId = toast.loading("Loading...");
     const res = await fetch(
       `${API_URL}/auth/local/register?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
       {
@@ -146,12 +178,9 @@ export const AuthProvider = ({ children }) => {
     console.log(data);
 
     if (!res.ok) {
-      //   setEmailError(res);
-      console.log("not working");
-
-      //   setTimeout(() => {
-      //     setEmailError(false);
-      //   }, 5000);
+      toast.error(`${data.error.message} 😢`, {
+        duration: 6000,
+      });
     }
 
     // setUserData(data);
@@ -159,6 +188,10 @@ export const AuthProvider = ({ children }) => {
     if (res.ok) {
       setUser(data.user);
       // router.push("/find");
+
+      toast.success("Account successfully created! 🎉", {
+        duration: 6000,
+      });
 
       const decoded = jwt(data.jwt);
 
@@ -172,6 +205,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     setLoading(false);
+    toast.remove(toastId);
   };
 
   const forgotPassword = async ({ email }) => {
@@ -202,6 +236,7 @@ export const AuthProvider = ({ children }) => {
   // Login
   const login = async ({ email: identifier, password }) => {
     setLoading(true);
+    const toastId = toast.loading("Loading...");
 
     const res = await fetch(
       `${API_URL}/auth/local?populate[circle][populate][0]=image&populate[requests][populate][1]=receiver&populate[requests][populate][2]=receiver.image&populate[requests][populate][3]=senders&populate[requests][populate][4]=senders.image`,
@@ -222,6 +257,9 @@ export const AuthProvider = ({ children }) => {
     console.log(data);
 
     if (res.ok) {
+      toast.success("Login successful 🎉", {
+        duration: 6000,
+      });
       const decoded = jwt(data.jwt);
 
       cookies.set("tracker_authorization", data.jwt, {
@@ -230,17 +268,9 @@ export const AuthProvider = ({ children }) => {
 
       checkUserLoggedIn();
     } else {
-      setErrorMessage(data.error.message);
-      setError(true);
-
-      setPassError(true);
-      setEError(true);
-
-      setTimeout(() => {
-        setError(false);
-        setPassError(false);
-        setEError(false);
-      }, 10000);
+      toast.error(`${data.error.message} 😢`, {
+        duration: 6000,
+      });
     }
 
     // if(res.staus === 400) {
@@ -251,6 +281,7 @@ export const AuthProvider = ({ children }) => {
     // }
 
     setLoading(false);
+    toast.remove(toastId);
   };
 
   // Logout

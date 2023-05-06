@@ -15,6 +15,7 @@ import Register from "./pages/Register";
 import Find from "./pages/Find";
 import HomeNav from "./components/HomeNav/HomeNav";
 import { AnimatePresence } from "framer-motion";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <div className="App">
+      <Toaster position="top-center" reverseOrder={false} />
       {user ? <UserNav /> : <Nav />}
       {(location.pathname === "/login" ||
         location.pathname === "/register") && <HomeNav />}
