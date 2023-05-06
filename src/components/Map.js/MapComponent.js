@@ -10,6 +10,7 @@ import { useMap } from "react-leaflet";
 import { Icon } from "leaflet";
 import userImage from "../imgs/userImage.png";
 import MarkerComponent from "./MarkerComponent";
+import toast, { Toaster } from "react-hot-toast";
 
 const MapComponent = () => {
   const [location, setLocation] = useState({ lat: null, lng: null });
